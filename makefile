@@ -7,6 +7,7 @@ SOURCES=e80.c system/ctype.c system/kolibri.c system/stdlib.c system/string.c z8
 OBJECTS=e80.o ctype.o kolibri.o stdlib.o string.o z80.o
 ASM_OBJECTS=start.o rom.o
 TARGET=e80
+KOLIBRI_IMG_FILE=./bin/kolibri.img
 
 clean:
 	rm -rf *.o
@@ -28,10 +29,16 @@ all: $(TARGET)
 	rm -rf bin
 	mkdir bin
 	cp $(TARGET) bin
+	cp games/*.sna bin
 	make clean
 
-iso:
-	make clean
-	make all
-	cp games/*.sna bin
-	mkisofs -lJR  -o e80.iso bin/
+run:
+	test -s $(KOLIBRI_IMG_FILE) \
+	 || { wget -O bin/latest-img.7z http://builds.kolibrios.org/eng/latest-img.7z ; \
+	 	  7za x -obin bin/latest-img.7z ; \
+	 	  rm -f bin/latest-img.7z ; }
+	-mdeltree -i $(KOLIBRI_IMG_FILE) 3d demos games e80
+	mmd -i $(KOLIBRI_IMG_FILE) e80
+	mcopy -i bin/kolibri.img bin/e80 ::/e80/e80
+	mcopy -i bin/kolibri.img bin/othello.sna ::/e80/othello.sna
+	qemu-system-i386 -blockdev driver=file,node-name=f0,filename=$(KOLIBRI_IMG_FILE) -device floppy,drive=f0
