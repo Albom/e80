@@ -782,7 +782,7 @@ void kol_main()
 
     for (;;)
     {
-        event = kol_event_wait_time(1);
+        event = kol_event_check();
 
         switch (event)
         {
