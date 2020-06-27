@@ -1,6 +1,7 @@
 #include "system/kolibri.h"
 #include "system/stdlib.h"
 #include "system/string.h"
+#include "system/msgbox.h"
 #include "z80/z80.h"
 #define TYPE_NO 0
 #define TYPE_SNA 1
@@ -633,7 +634,7 @@ void memory_load_sna(Z80Regs *regs, char *filename)
     file.p00 = 0;
     file.p04 = 27;
     file.p12 = 0x4000 * 3;
-    file.p16 = (unsigned) regs->RAM + 16384;
+    file.p16 = (unsigned) regs->RAM + 0x4000;
     file.p20 = 0;
     file.p21 = filename;
 
@@ -672,7 +673,7 @@ void memory_save_sna(Z80Regs *regs, char *filename)
     buffer[17] = regs->IX.B.l;
     buffer[18] = regs->IX.B.h;
     buffer[19] = regs->IFF1 << 2;
-    buffer[20] = regs->R.W &0xFF;
+    buffer[20] = regs->R.W & 0xFF;
     buffer[21] = regs->AF.B.l;
     buffer[22] = regs->AF.B.h;
 
@@ -699,7 +700,7 @@ void memory_save_sna(Z80Regs *regs, char *filename)
     file.p00 = 3;
     file.p04 = 27;
     file.p12 = 0x4000 * 3;
-    file.p16 = (unsigned) regs->RAM + 16384;
+    file.p16 = (unsigned) regs->RAM + 0x4000;
     file.p20 = 0;
     file.p21 = filename;
 
@@ -718,7 +719,7 @@ void memory_save_scr(Z80Regs *regs, char *filename)
     file.p00 = 2;
     file.p04 = 0x4000;
     file.p12 = 6912;
-    file.p16 = (unsigned) regs->RAM + 16384;
+    file.p16 = (unsigned) regs->RAM + 0x4000;
     file.p20 = 0;
     file.p21 = filename;
 
@@ -780,7 +781,7 @@ void kol_main()
 
     for (;;)
     {
-        event = kol_event_wait_time(5);
+        event = kol_event_wait_time(1);
 
         switch (event)
         {
@@ -794,27 +795,43 @@ void kol_main()
                 switch (key)
                 {
                     case 60:    // F2
-                        memory_save_sna(&spectrumZ80,
-                            szBackup);
+                        if (IDOK == MessageBox("Save snapshot?", 
+                            WND_CAPTION, MB_OKCANCEL))
+                            {
+                            memory_save_sna(&spectrumZ80,
+                                szBackup);
+                            }
                         break;
 
                     case 61:    // F3
-                        memory_load_sna(&spectrumZ80,
-                            szBackup);
+                        if (IDOK == MessageBox("Load snapshot?", 
+                            WND_CAPTION, MB_OKCANCEL))
+                            {
+                            memory_load_sna(&spectrumZ80,
+                                szBackup);
+                            }
                         break;
 
                     case 62:    // F4
-                        memory_save_scr(&spectrumZ80,
-                            szScreen);
+                        if (IDOK == MessageBox("Save screenshot?", 
+                            WND_CAPTION, MB_OKCANCEL))
+                            {
+                            memory_save_scr(&spectrumZ80,
+                                szScreen);
+                            }
                         break;
 
                     case 88:    // F12 Reset
-                        Z80Reset(&spectrumZ80, 69888);
-                        Z80FlagTables();
-                        fila[1][1] = fila[1][2] =
-                            fila[2][2] = fila[3][2] =
-                            fila[4][2] = fila[4][1] =
-                            fila[3][1] = fila[2][1] = 0xFF;
+                        if (IDOK == MessageBox("Reset?", 
+                            WND_CAPTION, MB_OKCANCEL))
+                            {
+                            Z80Reset(&spectrumZ80, 69888);
+                            Z80FlagTables();
+                            fila[1][1] = fila[1][2] =
+                                fila[2][2] = fila[3][2] =
+                                fila[4][2] = fila[4][1] =
+                                fila[3][1] = fila[2][1] = 0xFF;
+                            }
                         break;
 
                     default:
@@ -830,24 +847,24 @@ void kol_main()
                     free(spectrumZ80.RAM);
                     kol_exit();
                 }
-
                 break;
 
             default:
                 Z80Run(&spectrumZ80, 224 *64);
-                for (int scanl = 0; scanl < 192; scanl++)
+                for (int scanl = 0; scanl < 192; scanl++){
                     Z80Run(&spectrumZ80, 224);
+                    }
 
                 Z80Run(&spectrumZ80, 224 *56);
 
                 if (target_cycle < 2 || frame_counter == 0)
-                {
+                    {
                     screen_print(&spectrumZ80);
                     kol_screen_wait_rr();
                     kol_paint_image((540 - screen_a_w) / 2 - 5,
                         (440 - screen_a_h - kol_skin_height()) / 2,
                         screen_a_w, screen_a_h, screen);
-                }
+                    }
 
                 while (target_cycle == 0)
                 {

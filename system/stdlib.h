@@ -1,4 +1,6 @@
 
+#define size_t unsigned
+
 #define RAND_MAX 0x7FFFU
 
 #define isspace(c) ((c)==' ')

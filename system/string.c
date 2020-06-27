@@ -1,159 +1,143 @@
 
-#include "string.h"
 #include "ctype.h"
+#include "string.h"
 
-void*  memset(void *mem, int c, unsigned size)
+void*  memset(void *mem, int c, size_t size)
 {
-unsigned i;
+for (size_t i = 0; i < size; i++)
+     *((char *)mem+i) = (char) c;
 
-for ( i = 0; i < size; i++ )
-	 *((char *)mem+i) = (char) c;
-
-return NULL;	
+return NULL;    
 }
 
-
-void* memcpy(void *dst, const void *src, unsigned size)
+void* memcpy(void *dst, const void *src, size_t size)
 {
-
-unsigned i;
-
-for ( i = 0; i < size; i++)
-	*(char *)(dst+i) = *(char *)(src+i);
+for (size_t i = 0; i < size; i++)
+    *(char *)(dst+i) = *(char *)(src+i);
 
 return NULL;
 }
 
-
-int memcmp(const void* buf1, const void* buf2, int count)
+int memcmp(const void *buf1, const void *buf2, size_t count)
 {
-int i;
-for (i=0;i<count;i++)
-	{
-	if (*(unsigned char*)buf1<*(unsigned char*)buf2)
-		return -1;
-	if (*(unsigned char*)buf1>*(unsigned char*)buf2)			
-		return 1;
-	}
+for (int i=0;i<count;i++)
+    {
+    if (*(unsigned char*)buf1<*(unsigned char*)buf2)
+        return -1;
+    if (*(unsigned char*)buf1>*(unsigned char*)buf2)            
+        return 1;
+    }
 return 0;
 }
 
-void strcat(char strDest[], char strSource[])
+void strcat(char *strDest, const char *strSource)
 {
 
 int i, j;
  
 i = j = 0;
 while (strDest[i] != '\0')
-	i++;
+    i++;
 
 while ((strDest[i++] = strSource[j++]) != '\0')
-             ;
+    ;
 }
 
 
-int strcmp(const char* string1, const char* string2)
+int strcmp(const char *string1, const char *string2)
 {
 
 while (1)
-	{
-	if (*string1<*string2)
-		return -1;
-	if (*string1>*string2)
-		return 1;
+    {
+    if (*string1<*string2)
+        return -1;
+    if (*string1>*string2)
+        return 1;
 
-	if (*string1=='\0')
-		return 0;
+    if (*string1=='\0')
+        return 0;
 
-	string1++;
-	string2++;
-	}
+    string1++;
+    string2++;
+    }
 
 }
 
-int    strnicmp(const char* string1, const char* string2, unsigned count)
+int strnicmp(const char *string1, const char *string2, size_t count)
 {
-int pc = 0;
+size_t pc = 0;
 while (1)
-	{
-	if (toupper(*string1)<toupper(*string2))
-		return -1;
-	if (toupper(*string1)>toupper(*string2))
-		return 1;
+    {
+    if (toupper(*string1)<toupper(*string2))
+        return -1;
+    if (toupper(*string1)>toupper(*string2))
+        return 1;
 
-	if (*string1=='\0' || pc == count)
-		return 0;
+    if (*string1=='\0' || pc == count)
+        return 0;
 
-	string1++;
-	string2++;
-	pc++;
-	}
+    string1++;
+    string2++;
+    pc++;
+    }
 }
 
-void strcpy(char strDest[], const char strSource[])
+void strcpy(char *strDest, const char *strSource)
 {
-unsigned i;
-
-i = 0;
+size_t i = 0;
 while ((strDest[i] = strSource[i]) != '\0')
-	i++;
-
+    i++;
 }
 
 
-char* strncpy(char *strDest, const char *strSource, unsigned n)
+char* strncpy(char *strDest, const char *strSource, size_t n)
 {
-unsigned i;
 
 if (! n )
-	return strDest;
+    return strDest;
 
-i = 0;
+size_t i = 0;
 while ((strDest[i] = strSource[i]) != '\0')
-	if ( (n-1) == i )
-		break;
-	else
-		i++;
+    if ( (n-1) == i )
+        break;
+    else
+        i++;
 
 return strDest;
 }
 
 
-int strlen(const char* string)
+size_t strlen(const char *string)
 {
-int i;
-
-i=0;
+size_t i = 0;
 while (*string++) i++;
 return i;
 }
 
-
-
 char* strchr(const char* string, int c)
 {
-	while (*string)
-	{
-		if (*string==c)
-			return (char*)string;
-		string++;
-	}	
-	return (char*)0;
+    while (*string)
+    {
+        if (*string==c)
+            return (char*)string;
+        string++;
+    }    
+    return (char*)0;
 }
 
 
 char* strrchr(const char* string, int c)
 {
-	char* last_found = 0; // !
-	while (*string)
-	{
-		if (*string==c)
-		{
-			last_found = (char*)string;
-		}
-		string++;
-	}	
-	return last_found;
+    char* last_found = 0; // !
+    while (*string)
+    {
+        if (*string==c)
+        {
+            last_found = (char*)string;
+        }
+        string++;
+    }    
+    return last_found;
 }
 
 
@@ -172,8 +156,6 @@ s[3] = d + '0';
 s[4] = 0;
 }
 
-
- /* reverse:  переворачиваем строку s на месте */
  void reverse(char s[])
  {
      int i, j;
@@ -186,8 +168,6 @@ s[4] = 0;
      }
  }
 
-
- /* itoa:  конвертируем n в символы в s */
  void itoa(int n, char s[])
  {
      int i, sign;
@@ -204,18 +184,14 @@ s[4] = 0;
      reverse(s);
  }
 
-
-
-int _atoi ( char *s )
+int _atoi (char *s)
 {
-int i, n;
-
-n = 0;
-for ( i = 0; s[i]!= '\0'; ++i)
-	if ((s[i]<'0') || (s[i]>'9'))
-		return 0;
-	else
-		n = 10 * n + s[i] - '0';
+int n = 0;
+for (int i = 0; s[i]!= '\0'; ++i)
+    if ((s[i]<'0') || (s[i]>'9'))
+        return 0;
+    else
+        n = 10 * n + s[i] - '0';
 
 return n;
 }

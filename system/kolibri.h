@@ -1,46 +1,49 @@
 
+#ifndef KOLIBRI
+
 #define NULL ((void*)0)
 
-#define SHM_OPEN		0
-#define SHM_OPEN_ALWAYS	0x04
-#define SHM_CREATE		0x08 
-#define SHM_READ		0x00 
-#define SHM_WRITE		0x01
+#define SHM_OPEN           0
+#define SHM_OPEN_ALWAYS    0x04
+#define SHM_CREATE         0x08 
+#define SHM_READ           0x00 
+#define SHM_WRITE          0x01
 
-#define E_NOTFOUND	5 
-#define E_ACCESS	10 
-#define E_NOMEM		30 
-#define E_PARAM		33
+#define E_NOTFOUND     5 
+#define E_ACCESS       10 
+#define E_NOMEM        30 
+#define E_PARAM        33
 
-#define FILENAME_MAX	1024
+#define FILENAME_MAX   1024
+
+
 
 #pragma pack(push,1)
 typedef struct 
 {
-unsigned	p00;
-unsigned long long	p04;
-unsigned	p12;
-unsigned	p16;
-char		p20;
-char		*p21;
+unsigned    p00;
+unsigned long long    p04;
+unsigned    p12;
+unsigned    p16;
+char        p20;
+char        *p21;
 } kol_struct70;
 #pragma pack(pop)
-
 
 #pragma pack(push,1)
 typedef struct
 {
-unsigned	p00;
-char		p04;
-char		p05[3];
-unsigned	p08;
-unsigned	p12;
-unsigned	p16;
-unsigned	p20;
-unsigned	p24;
-unsigned	p28;
-unsigned long long	p32;
-unsigned	p40;
+unsigned    p00;
+char        p04;
+char        p05[3];
+unsigned    p08;
+unsigned    p12;
+unsigned    p16;
+unsigned    p20;
+unsigned    p24;
+unsigned    p28;
+unsigned long long    p32;
+unsigned    p40;
 } kol_struct_BDVK;
 #pragma pack(pop)
 
@@ -48,8 +51,8 @@ unsigned	p40;
 #pragma pack(push,1)
 typedef struct
 {
-char	*name;
-void	*data;
+char    *name;
+void    *data;
 } kol_struct_import;
 #pragma pack(pop)
 
@@ -116,4 +119,8 @@ char* kol_clip_get(int n);
 int kol_clip_set(int n, char buffer[]);
 void set_cwd(const char* cwd);
 int getcwd(char *buf, unsigned size);
+
+#define KOLIBRI
+
+#endif
 

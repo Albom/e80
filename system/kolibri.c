@@ -192,13 +192,12 @@ asm volatile ("int $0x40"::"a"(63), "b"(1), "c"(c));
 
 void kol_board_puts(char *s)
 {
-unsigned i;
-i = 0;
+unsigned i = 0;
 while (*(s+i))
-	{
-	asm volatile ("int $0x40"::"a"(63), "b"(1), "c"(*(s+i)));
-	i++;
-	}
+    {
+    asm volatile ("int $0x40"::"a"(63), "b"(1), "c"(*(s+i)));
+    i++;
+    }
 }
 
 
@@ -207,7 +206,7 @@ void kol_board_puti(int n)
 char c;
 
 if ( n > 1 )
-	kol_board_puti(n / 10);
+    kol_board_puti(n / 10);
 
 c = n % 10 + '0';
 asm volatile ("int $0x40"::"a"(63), "b"(1), "c"(c));
@@ -231,11 +230,11 @@ void* kol_cofflib_procload (kol_struct_import *imp, char *name)
 {
 int i;
 for (i=0;;i++)
-	if ( NULL == ((imp+i) -> name))
-		break;
-	else
-		if ( 0 == strcmp(name, (imp+i)->name) )
-			return (imp+i)->data;
+    if ( NULL == ((imp+i) -> name))
+        break;
+    else
+        if ( 0 == strcmp(name, (imp+i)->name) )
+            return (imp+i)->data;
 return NULL;
 }
 
@@ -245,10 +244,10 @@ unsigned kol_cofflib_procnum (kol_struct_import *imp)
 unsigned i, n;
 
 for (i=n=0;;i++)
-	if ( NULL == ((imp+i) -> name))
-		break;
-	else
-		n++;
+    if ( NULL == ((imp+i) -> name))
+        break;
+    else
+        n++;
 
 return n;
 }
@@ -256,19 +255,15 @@ return n;
 
 void kol_cofflib_procname (kol_struct_import *imp, char *name, unsigned n)
 {
-unsigned i;
-*name = 0;
-
-for (i=0;;i++)
-	if ( NULL == ((imp+i) -> name))
-		break;
-	else
-		if ( i == n )
-			{
-			strcpy(name, ((imp+i)->name));
-			break;
-			}
-
+for (unsigned i=0;;i++)
+    if ( NULL == ((imp+i) -> name))
+        break;
+    else
+        if ( i == n )
+            {
+            strcpy(name, ((imp+i)->name));
+            break;
+            }
 }
 
 
@@ -310,14 +305,13 @@ asm volatile ("int $0x40"::"a"(18), "b"(9), "c"(param));
 
 void kol_path_file2dir(char *dir, char *fname)
 {
-unsigned i;
 strcpy (dir, fname);
-for ( i = strlen(dir);; --i)
-	if ( '/' == dir[i])
-		{
-		dir[i] = '\0';
-		return;
-		}
+for (unsigned i = strlen(dir); ; --i)
+    if ( '/' == dir[i])
+        {
+        dir[i] = '\0';
+        return;
+        }
 }
 
 
@@ -326,22 +320,22 @@ void kol_path_full(char *full, char *fname)
 char temp[256];
 
 switch (*fname)
-	{
+    {
 
-	case '/':
-		strncpy(temp, fname+1, 2);
-		temp[2]=0;
-		if ( (!strcmp("rd", temp)) || (!strcmp("hd", temp)) || (!strcmp("cd", temp)) )
-			strcpy (full, fname);
-		break;
+    case '/':
+        strncpy(temp, fname+1, 2);
+        temp[2]=0;
+        if ( (!strcmp("rd", temp)) || (!strcmp("hd", temp)) || (!strcmp("cd", temp)) )
+            strcpy (full, fname);
+        break;
 
-	case '.':
-		break;
+    case '.':
+        break;
 
-	default:
-		break;
+    default:
+        break;
 
-	};
+    };
 
 }
 
