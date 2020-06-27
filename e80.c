@@ -70,7 +70,7 @@ void screen_print(Z80Regs *regs)
 {
     kol_struct70 file;
 
-    char palette[] = { 
+    const char palette[] = { 
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0xB0, 0x00, 0x00, 0xB0, 0x00, 0x00,
         0x00, 0x00, 0xB0, 0x00, 0x00, 0xB0,
@@ -90,31 +90,27 @@ void screen_print(Z80Regs *regs)
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
     };
 
-    char *scr;
-    char *atr;
+    char scr[6144];
+    char atr[768];
 
     char a, c, s;
-    int i, j, k, l, m;
     unsigned bri;
     char *color;
     char *addr;
     int n = 0;
     int z = 0;
-    int x, y;
-
-    scr = malloc(6144);
-    atr = malloc(768);
+    int y;
 
     memcpy(scr, regs->RAM + 0x4000, 6144);
     memcpy(atr, regs->RAM + 0x5800, 768);
 
-    for (j = 0; j < 3; j++)
-        for (i = 0; i < 8; i++)
-            for (k = 0; k < 8; k++)
-                for (l = 0; l < 32; l++)
+    for (int j = 0; j < 3; j++)
+        for (int i = 0; i < 8; i++)
+            for (int k = 0; k < 8; k++)
+                for (int l = 0; l < 32; l++)
                 {
                     c = scr[j *2048 + k *256 + i *32 + l];
-                    for (m = 0; m < 8; m++)
+                    for (int m = 0; m < 8; m++)
                     {
                         s = (c & 128) >> 7;
                         a = atr[j *256 + i *32 + l];
@@ -170,9 +166,6 @@ void screen_print(Z80Regs *regs)
             flash = 0;
         time = kol_time_tick();
     }
-
-    free(scr);
-    free(atr);
 
 }
 
@@ -297,10 +290,12 @@ void keyboard_process(unsigned key)
             break;
 
         case 16:    // Q Down
+        case 72: // UpArrow Down
             fila[2][1] &= 0xFE;
             break;
 
         case 16 + 128:    // Q Up
+        case 72 + 128: // UpArrow Up
             fila[2][1] |= 1;
             break;
 
@@ -361,26 +356,32 @@ void keyboard_process(unsigned key)
             break;
 
         case 24:    // O Down
+        case 75:  // Left Down
             fila[2][2] &= 0xFD;
             break;
 
         case 24 + 128:    // O Up
+        case 75 + 128:  // Left Up
             fila[2][2] |= 2;
             break;
 
         case 25:    // P Down
+        case 77:  // Right Down
             fila[2][2] &= 0xFE;
             break;
 
         case 25 + 128:    // P Up
+        case 77 + 128:  // Right Up
             fila[2][2] |= 1;
             break;
 
         case 30:    // A Down
+        case 80: // DownArrow Down
             fila[3][1] &= 0xFE;
             break;
 
         case 30 + 128:    // A Up
+        case 80 + 128: // DownArrow Up
             fila[3][1] |= 1;
             break;
 
